@@ -1,0 +1,18 @@
+/* components/Tiles.module.css */
+.tilesContainer {
+    display: flex;
+    gap: 8px;
+    margin: 1rem 0;
+  }
+  .tile {
+    width: 40px;
+    height: 40px;
+    background-color: #ffebcd;
+    border: 2px solid #8b4513;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    cursor: grab;
+  }
+  
