@@ -24,7 +24,7 @@ export async function GET(request) {
     return new Response(JSON.stringify(words), { status: 200 });
   } catch (error) {
     logger.error(error);
-    return new Response(JSON.stringify({ error: 'Ошибка при получении слов' }), { status: 500 });
+    return new Response(JSON.stringify({ error: 'Error getting word' }), { status: 500 });
   }
 }
 
@@ -36,6 +36,6 @@ export async function POST(request) {
     return new Response(JSON.stringify(newWord), { status: 201 });
   } catch (error) {
     logger.error(error);
-    return new Response(JSON.stringify({ error: 'Ошибка при создании слова' }), { status: 500 });
+    return new Response(JSON.stringify({ error: 'Error creating word' }), { status: 500 });
   }
 }

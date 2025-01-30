@@ -2,19 +2,23 @@
   "name": "scrabble-app",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "import-words": "node scripts/importWords.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.7",
     "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.12.0",
     "mongoose": "^8.9.5",
     "mqtt": "^5.10.3",
     "next": "15.1.6",
+    "node-fetch": "^3.3.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "socket.io": "^4.8.1",

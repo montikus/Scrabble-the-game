@@ -5,10 +5,15 @@ export default function HomePage() {
   return (
     <div>
       <h2>Witaj w grze Scrabble!</h2>
-      <p>Wybierz opcję:</p>
+      <Link href="/connect">
+        <button style={{ fontSize: '1.2rem', padding: '0.5rem 1rem' }}>
+          PLAY
+        </button>
+      </Link>
+      <p>OR:</p>
       <ul>
-        <li><Link href="/dashboard">Panel sterowania (Dashboard)</Link></li>
-        <li><Link href="/api/words">Oglądać API słów (JSON)</Link></li>
+        <li><Link href="/dashboard">Dashboard</Link></li>
+        <li><Link href="/api/words">Dictionary</Link></li>
       </ul>
     </div>
   );
