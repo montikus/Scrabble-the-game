@@ -13,7 +13,7 @@ export async function PUT(request, { params }) {
     if (!updated) {
       return new Response(JSON.stringify({ error: 'Player not found' }), { status: 404 });
     }
-    logger.info(`Игрок ${id} обновлён`);
+    logger.info(`Player ${id} updated`);
     return new Response(JSON.stringify(updated), { status: 200 });
   } catch (error) {
     logger.error(error);
