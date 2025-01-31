@@ -1,30 +1,31 @@
 // mqtt/mqttClient.js
 import mqtt from 'mqtt';
-import logger from '@/lib/logger';
+const logger = console; // или ваш логгер
 
 const options = {
-  clientId: 'scrabbleClient_' + Math.random().toString(16).slice(2),
-  username: process.env.MQTT_USERNAME,
-  password: process.env.MQTT_PASSWORD,
+  clientId: 'scrabble_mqtt_client_' + Math.random().toString(16).substring(2),
+  username: process.env.MQTT_USERNAME || '',
+  password: process.env.MQTT_PASSWORD || '',
 };
 
 const client = mqtt.connect(process.env.MQTT_URL || 'mqtt://localhost:1883', options);
 
 client.on('connect', () => {
-  logger.info('MQTT клиент подключён');
-  // Подпишемся на топик, например, 'scrabble/updates'
-  client.subscribe('scrabble/updates', (err) => {
+  logger.log('MQTT клиент подключён');
+  // Можно подписаться на общий топик, если нужно
+  client.subscribe('game/+/chat', (err) => {
     if (err) {
-      logger.error('Ошибка подписки на scrabble/updates:', err);
+      logger.error('Ошибка подписки на game/+/chat:', err);
     } else {
-      logger.info('Подписка на scrabble/updates успешна');
+      logger.log('Подписка на game/+/chat успешна');
     }
   });
 });
 
 client.on('message', (topic, message) => {
-  logger.info(`MQTT Сообщение: [${topic}] ${message.toString()}`);
-  // Здесь можно обрабатывать сообщения (обновлять игру и т.д.)
+  logger.log(`MQTT: [${topic}] ${message.toString()}`);
+  // Можно обрабатывать сообщения — напр. 
+  // можно ретранслировать их обратно в Socket.io.
 });
 
 client.on('error', (error) => {

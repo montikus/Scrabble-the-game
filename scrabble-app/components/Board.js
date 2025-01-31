@@ -1,24 +1,11 @@
 // components/Board.js
 'use client';
 import React from 'react';
-import styles from './Board.module.css'; 
 
 export default function Board() {
-  const rows = 15; 
-  const cols = 15;
-
   return (
-    <div className={styles.board}>
-      {Array.from({ length: rows }).map((_, rowIndex) => (
-        <div key={rowIndex} className={styles.row}>
-          {Array.from({ length: cols }).map((_, colIndex) => (
-            <div key={colIndex} className={styles.cell}>
-              {/* Здесь будет клетка доски */}
-              {rowIndex},{colIndex}
-            </div>
-          ))}
-        </div>
-      ))}
+    <div style={{ border: '1px solid black', width: '400px', height: '400px', marginBottom: '1rem' }}>
+      <p>Здесь будет игровая доска с буквами.</p>
     </div>
   );
 }

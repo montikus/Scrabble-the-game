@@ -1,52 +1,62 @@
 // components/Chat.js
-'use client';  // чтобы использовать WebSocket на фронтенде
-import React, { useState, useEffect } from 'react';
-import io from 'socket.io-client';
+'use client';
 
-let socket;
+import React, { useEffect, useState } from 'react';
 
-export default function Chat() {
-  const [message, setMessage] = useState('');
+export default function Chat({ socket, gameId, playerName }) {
   const [messages, setMessages] = useState([]);
+  const [inputText, setInputText] = useState('');
 
   useEffect(() => {
-    // Подключаемся к WebSocket
-    socket = io({
-      path: '/api/socketio',
-    });
+    if (!socket) return;
 
-    // Присоединяемся к комнате
-    socket.emit('joinRoom', 'scrabbleRoom');
-
-    // Слушаем сообщения
-    socket.on('chatMessage', (msg) => {
+    // Слушаем входящие сообщения "chatMessage"
+    const handleChatMessage = (msg) => {
+      console.log('Новое сообщение:', msg);
+      // Добавляем в список сообщений
       setMessages((prev) => [...prev, msg]);
-    });
-
-    return () => {
-      socket.disconnect();
     };
-  }, []);
+
+    socket.on('chatMessage', handleChatMessage);
+
+    // Отписка при размонтировании
+    return () => {
+      socket.off('chatMessage', handleChatMessage);
+    };
+  }, [socket]);
 
   const sendMessage = () => {
-    socket.emit('chatMessage', message);
-    setMessage('');
+    if (!inputText.trim()) return;
+    const message = {
+      sender: playerName,
+      text: inputText.trim(),
+    };
+    // Отправляем на сервер
+    socket.emit('chatMessage', gameId, message);
+
+    // Очистим поле ввода
+    setInputText('');
   };
 
   return (
-    <div>
-      <h2>Scrabble Chat</h2>
-      <div>
-        {messages.map((m, idx) => (
-          <div key={idx}>{m}</div>
+    <div style={{ marginTop: '1rem' }}>
+      <h3>Чат</h3>
+      <div style={{ border: '1px solid #ccc', height: '150px', overflowY: 'auto', marginBottom: '0.5rem' }}>
+        {messages.map((msg, index) => (
+          <div key={index}>
+            <strong>{msg.sender}:</strong> {msg.text}
+          </div>
         ))}
       </div>
       <input
         type="text"
-        value={message}
-        onChange={e => setMessage(e.target.value)}
+        placeholder="Сообщение..."
+        value={inputText}
+        onChange={(e) => setInputText(e.target.value)}
+        onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
+        style={{ width: '70%' }}
       />
-      <button onClick={sendMessage}>Send</button>
+      <button onClick={sendMessage}>Отправить</button>
     </div>
   );
 }

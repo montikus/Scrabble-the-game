@@ -17,11 +17,17 @@ export async function GET() {
 export async function POST(request) {
   try {
     await connectDB();
-    const data = await request.json();
-    const newGame = await Game.create(data);
+    const body = await request.json();
+    
+    const newGame = await Game.create({
+      status: body.status || 'pending',
+      players: body.players || [],
+      messages: body.messages || [],
+    });
+
     return new Response(JSON.stringify(newGame), { status: 201 });
   } catch (error) {
-    logger.error('Error creting game:', error);
-    return new Response(JSON.stringify({ error: 'Server error' }), { status: 500 });
+    console.error('Error creating game:', error);
+    return new Response(JSON.stringify({ error: 'Error creating game' }), { status: 500 });
   }
 }

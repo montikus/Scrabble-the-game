@@ -3,43 +3,58 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import io from 'socket.io-client'; // socket.io-client
+import Board from '@/components/Board';
+import Chat from '@/components/Chat';
 
-export default function GamePage() {
+let socket;
+
+export default function GameRoomPage() {
   const params = useParams();
-  const { id } = params; 
-  const [gameData, setGameData] = useState(null);
+  const gameId = params.id;
 
+  const [playerName, setPlayerName] = useState('');
+  const [joined, setJoined] = useState(false);
+
+  // При монтировании подключаемся к сокету
   useEffect(() => {
-    const fetchGame = async () => {
-      try {
-        const res = await fetch(`/api/games/${id}`);
-        const data = await res.json();
-        if (res.ok) {
-          setGameData(data);
-        } else {
-          console.error('Error getting game:', data.error);
-        }
-      } catch (error) {
-        console.error('Request error:', error);
-      }
-    };
-    fetchGame();
-  }, [id]);
+    // Инициализируем socket, если ещё не инициализирован
+    if (!socket) {
+      socket = io({ path: '/socket.io' }); 
+      // Если нужно указать url, делаем: io("http://localhost:3000", {...})
+    }
 
-  if (!gameData) {
-    return <div style={{ margin: '2rem' }}>Loading...</div>;
-  }
+    return () => {
+      // При размонтировании можно отключить, если хотим
+      // socket.disconnect();
+    };
+  }, []);
+
+  // Спросим имя игрока
+  const handleJoinRoom = () => {
+    const name = prompt('Введите ваше имя: ');
+    if (name) {
+      setPlayerName(name);
+      // Отправим событие "joinRoom" на сервер
+      socket.emit('joinRoom', gameId, name);
+      setJoined(true);
+    }
+  };
 
   return (
-    <div style={{ margin: '2rem' }}>
-      <h1>Game: {gameData._id}</h1>
-      <p>Status: {gameData.status}</p>
+    <div style={{ margin: '1rem' }}>
+      <h1>Комната игры: {gameId}</h1>
 
-      {/* Здесь может быть ваш компонент доски, например: */}
-      <div style={{ border: '1px solid #ccc', padding: '1rem' }}>
-        <h2>Игровая доска (макет)</h2>
-        <p>Здесь расположена логика игры, например, компоненты Board, Tiles и т.д.</p>
-      </div>
+      {joined ? (
+        <>
+          {/* Допустим, Board — это доска */}
+          <Board />
+          {/* А под ней — чат */}
+          <Chat socket={socket} gameId={gameId} playerName={playerName} />
+        </>
+      ) : (
+        <button onClick={handleJoinRoom}>Подключиться к комнате</button>
+      )}
     </div>
   );
 }
