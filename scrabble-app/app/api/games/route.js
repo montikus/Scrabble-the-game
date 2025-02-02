@@ -2,6 +2,9 @@
 import { connectDB } from '@/lib/db';
 import Game from '@/models/Game';
 import logger from '@/lib/logger';
+import mqttClient from '@/mqtt/mqttClient';
+import { NextResponse } from 'next/server';
+
 
 export async function GET() {
   try {
@@ -14,20 +17,24 @@ export async function GET() {
   }
 }
 
+
 export async function POST(request) {
   try {
     await connectDB();
     const body = await request.json();
-    
     const newGame = await Game.create({
       status: body.status || 'pending',
       players: body.players || [],
       messages: body.messages || [],
     });
 
-    return new Response(JSON.stringify(newGame), { status: 201 });
+    // Публикация MQTT-сообщения о создании игры
+    // Формат сообщения: { event: 'created', game: newGame }
+    mqttClient.publish('dashboard/games', JSON.stringify({ event: 'created', game: newGame }));
+
+    return NextResponse.json(newGame, { status: 201 });
   } catch (error) {
-    console.error('Error creating game:', error);
-    return new Response(JSON.stringify({ error: 'Error creating game' }), { status: 500 });
+    console.error('Ошибка при создании игры:', error);
+    return NextResponse.json({ error: 'Ошибка при создании игры' }, { status: 500 });
   }
 }

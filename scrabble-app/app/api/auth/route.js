@@ -3,58 +3,76 @@ import { connectDB } from '@/lib/db';
 import User from '@/models/User';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import logger from '@/lib/logger';
+import { NextResponse } from 'next/server';
+
+const SECRET_KEY = process.env.SECRET_KEY || 'SUPER_SECRET_KEY';
 
 export async function POST(request) {
-  /**
-   * Логика логина или регистрации в зависимости от тела запроса.
-   * Допустим, разделяем по наличию флага: { "action": "login" | "register" }
-   */
   try {
     await connectDB();
-    const { username, password, action } = await request.json();
+    const { action, username, password } = await request.json();
 
-    if (!username || !password) {
-      return new Response(JSON.stringify({ error: 'Enter login and password' }), { status: 400 });
+    if (!username || !password || !action) {
+      return NextResponse.json(
+        { error: 'Пожалуйста, предоставьте username, password и action' },
+        { status: 400 }
+      );
     }
 
     if (action === 'register') {
-      // Регистрация
-      const candidate = await User.findOne({ username });
-      if (candidate) {
-        return new Response(JSON.stringify({ error: 'User already exists' }), { status: 400 });
+      // Проверка существования пользователя
+      const existingUser = await User.findOne({ username });
+      if (existingUser) {
+        return NextResponse.json(
+          { error: 'Пользователь уже существует' },
+          { status: 400 }
+        );
       }
-
+      // Хеширование пароля и создание нового пользователя
       const hashedPassword = await bcrypt.hash(password, 10);
-      const newUser = await User.create({
-        username,
-        password: hashedPassword,
-      });
-      logger.info(`New user registered: ${username}`);
-
-      return new Response(JSON.stringify({ message: 'Successfull registration', user: newUser }), { status: 201 });
+      const newUser = await User.create({ username, password: hashedPassword });
+      return NextResponse.json(
+        { message: 'Пользователь зарегистрирован успешно', user: newUser },
+        { status: 201 }
+      );
     } else if (action === 'login') {
-      // Логин
+      // Поиск пользователя по логину
       const user = await User.findOne({ username });
       if (!user) {
-        return new Response(JSON.stringify({ error: 'User not found' }), { status: 404 });
+        return NextResponse.json(
+          { error: 'Пользователь не найден' },
+          { status: 404 }
+        );
       }
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) {
-        return new Response(JSON.stringify({ error: 'Incorrect password' }), { status: 401 });
+      // Сравнение пароля
+      const passwordMatch = await bcrypt.compare(password, user.password);
+      if (!passwordMatch) {
+        return NextResponse.json(
+          { error: 'Неверный пароль' },
+          { status: 401 }
+        );
       }
-
-      const token = jwt.sign({ userId: user._id, role: user.role }, process.env.SECRET_KEY, {
-        expiresIn: '1d',
-      });
-
-      // Пример возврата токена клиенту. Можно сохранить токен в Cookie:
-      return new Response(JSON.stringify({ message: 'Succesfull authorization', token }), { status: 200 });
+      // Генерация JWT
+      const token = jwt.sign(
+        { id: user._id, username: user.username, role: user.role },
+        SECRET_KEY,
+        { expiresIn: '1d' }
+      );
+      return NextResponse.json(
+        { message: 'Авторизация успешна', token, user },
+        { status: 200 }
+      );
+    } else {
+      return NextResponse.json(
+        { error: 'Неверное действие' },
+        { status: 400 }
+      );
     }
-
-    return new Response(JSON.stringify({ error: 'Unknown action' }), { status: 400 });
   } catch (error) {
-    logger.error(`Ошибка в Auth: ${error.message}`);
-    return new Response(JSON.stringify({ error: 'Server error' }), { status: 500 });
+    console.error('Ошибка в API auth:', error);
+    return NextResponse.json(
+      { error: 'Ошибка сервера' },
+      { status: 500 }
+    );
   }
 }
