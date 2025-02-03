@@ -1,16 +1,28 @@
 // models/Game.js
 import mongoose from 'mongoose';
 
-const MessageSchema = new mongoose.Schema({
-  sender: { type: String, required: true },
-  text: { type: String, required: true },
-  createdAt: { type: Date, default: Date.now },
-});
-
-const GameSchema = new mongoose.Schema({
-  status: { type: String, default: 'pending' },
-  players: [{ type: String }],
-  messages: [MessageSchema],
-}, { timestamps: true });
+const GameSchema = new mongoose.Schema(
+  {
+    // Список игроков (их ники)
+    players: { type: [String], default: [] },
+    // Статус хода – индекс игрока из массива players, по умолчанию 0
+    turnStatus: { type: Number, default: 0 },
+    // Состояние доски – двумерный массив клеток (15x15)
+    board: {
+      type: [[String]],
+      default: () => {
+        // Функция, создающая пустую доску 15x15
+        const BOARD_SIZE = 15;
+        return Array.from({ length: BOARD_SIZE }, () =>
+          Array.from({ length: BOARD_SIZE }, () => '')
+        );
+      },
+    },
+    // Дополнительное поле для сообщения хода (опционально)
+    moveMessage: { type: String, default: '' },
+    // Дополнительные поля, например, дата создания, можно задать в опциях timestamps
+  },
+  { timestamps: true }
+);
 
 export default mongoose.models.Game || mongoose.model('Game', GameSchema);
