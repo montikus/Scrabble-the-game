@@ -1,7 +1,7 @@
 // lib/db.js
 import mongoose from 'mongoose';
 
-let isConnected = false; // Чтобы избежать повторных подключений
+let isConnected = false; 
 
 export async function connectDB() {
   if (isConnected) return;

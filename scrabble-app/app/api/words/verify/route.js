@@ -12,7 +12,7 @@ export async function GET(request) {
     const word = searchParams.get('word');
 
     if (!word) {
-      return NextResponse.json({ exists: false, error: 'Слово не передано' }, { status: 400 });
+      return NextResponse.json({ exists: false, error: 'Word not found' }, { status: 400 });
     }
 
     // Ищем слово в базе, например, без учёта регистра
@@ -20,7 +20,7 @@ export async function GET(request) {
 
     return NextResponse.json({ exists: !!wordFound }, { status: 200 });
   } catch (error) {
-    console.error('Ошибка проверки слова:', error);
-    return NextResponse.json({ error: 'Ошибка сервера' }, { status: 500 });
+    console.error('Error checking word:', error);
+    return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }

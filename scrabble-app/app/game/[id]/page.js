@@ -71,7 +71,7 @@ const validateWord = async (word) => {
     const data = await res.json();
     return data.exists;
   } catch (error) {
-    console.error('Ошибка проверки слова:', error);
+    console.error('Error checking word:', error);
     return false;
   }
 };
@@ -108,7 +108,7 @@ export default function GamePage() {
   useEffect(() => {
     let storedName = sessionStorage.getItem('username');
     if (!storedName) {
-      storedName = prompt('Введите ваш ник:');
+      storedName = prompt('Enter nickname:');
       if (storedName) {
         sessionStorage.setItem('username', storedName);
       }
@@ -139,12 +139,12 @@ export default function GamePage() {
     setSocket(socketClient);
 
     socketClient.on('playerJoined', (data) => {
-      console.log(`Получено уведомление о присоединении: ${data.playerName}`);
+      console.log(`Received connection message: ${data.playerName}`);
       addPlayer(data.playerName);
     });
 
     socketClient.on('moveUpdate', (move) => {
-      console.log('Получено обновление хода:', move);
+      console.log('Receives move message:', move);
       if (move.board) setBoard(move.board);
       if (typeof move.turnStatus === 'number') {
         setTurnStatus(move.turnStatus);
@@ -180,7 +180,7 @@ export default function GamePage() {
   const endTurn = async () => {
     const { valid, word } = await validateAllWords(board);
     if (!valid) {
-      alert(`Слово "${word}" отсутствует в словаре`);
+      alert(`Word "${word}" is not in dictionary`);
       return;
     }
 

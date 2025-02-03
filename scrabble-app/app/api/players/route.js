@@ -30,9 +30,3 @@ export async function POST(request) {
     return new Response(JSON.stringify({ error: 'Error creating a player' }), { status: 500 });
   }
 }
-
-/**
- * Пример, если требуется отдельная обработка для PUT, DELETE. 
- * В Next.js 13 можно использовать сегмент динамического пути, но здесь
- * демонстрационный вариант "как есть".
- */

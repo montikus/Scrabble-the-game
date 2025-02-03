@@ -17,8 +17,6 @@ export function checkAdmin(decodedToken) {
 }
 
 export function extractTokenFromHeader(req) {
-  // В Next.js 13 request – это объект Request (Web API).
-  // Можно достать заголовки:
   const authHeader = req.headers.get('authorization') || '';
   if (authHeader.startsWith('Bearer ')) {
     return authHeader.slice(7);

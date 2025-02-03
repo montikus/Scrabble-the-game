@@ -3,7 +3,7 @@ import React from 'react';
 
 export default function Board({ board, onCellChange, disabled }) {
   if (!board || !Array.isArray(board)) {
-    return <div>Доска не загружена</div>;
+    return <div>Board is being loaded</div>;
   }
 
   const handleChange = (row, col, e) => {

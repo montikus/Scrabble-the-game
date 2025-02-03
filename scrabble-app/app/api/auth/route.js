@@ -14,7 +14,7 @@ export async function POST(request) {
 
     if (!username || !password || !action) {
       return NextResponse.json(
-        { error: 'Пожалуйста, предоставьте username, password и action' },
+        { error: 'Please, enter username, password and action' },
         { status: 400 }
       );
     }
@@ -24,7 +24,7 @@ export async function POST(request) {
       const existingUser = await User.findOne({ username });
       if (existingUser) {
         return NextResponse.json(
-          { error: 'Пользователь уже существует' },
+          { error: 'Password already exists' },
           { status: 400 }
         );
       }
@@ -32,7 +32,7 @@ export async function POST(request) {
       const hashedPassword = await bcrypt.hash(password, 10);
       const newUser = await User.create({ username, password: hashedPassword });
       return NextResponse.json(
-        { message: 'Пользователь зарегистрирован успешно', user: newUser },
+        { message: 'User registeres succesfully', user: newUser },
         { status: 201 }
       );
     } else if (action === 'login') {
@@ -40,7 +40,7 @@ export async function POST(request) {
       const user = await User.findOne({ username });
       if (!user) {
         return NextResponse.json(
-          { error: 'Пользователь не найден' },
+          { error: 'User not found' },
           { status: 404 }
         );
       }
@@ -48,7 +48,7 @@ export async function POST(request) {
       const passwordMatch = await bcrypt.compare(password, user.password);
       if (!passwordMatch) {
         return NextResponse.json(
-          { error: 'Неверный пароль' },
+          { error: 'Wrong password' },
           { status: 401 }
         );
       }
@@ -59,19 +59,19 @@ export async function POST(request) {
         { expiresIn: '1d' }
       );
       return NextResponse.json(
-        { message: 'Авторизация успешна', token, user },
+        { message: 'Authorization succesfull', token, user },
         { status: 200 }
       );
     } else {
       return NextResponse.json(
-        { error: 'Неверное действие' },
+        { error: 'Wrong action' },
         { status: 400 }
       );
     }
   } catch (error) {
-    console.error('Ошибка в API auth:', error);
+    console.error('Error in API auth:', error);
     return NextResponse.json(
-      { error: 'Ошибка сервера' },
+      { error: 'Server error' },
       { status: 500 }
     );
   }

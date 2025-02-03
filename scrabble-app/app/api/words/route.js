@@ -17,7 +17,7 @@ export async function GET() {
       headers: { 'Content-Type': 'text/plain; charset=utf-8' },
     });
   } catch (error) {
-    console.error('Ошибка при получении слов:', error);
-    return NextResponse.json({ error: 'Ошибка сервера' }, { status: 500 });
+    console.error('Error getting words:', error);
+    return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }

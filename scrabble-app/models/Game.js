@@ -18,9 +18,7 @@ const GameSchema = new mongoose.Schema(
         );
       },
     },
-    // Дополнительное поле для сообщения хода (опционально)
     moveMessage: { type: String, default: '' },
-    // Дополнительные поля, например, дата создания, можно задать в опциях timestamps
   },
   { timestamps: true }
 );

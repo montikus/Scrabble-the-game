@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 
 export default function AuthPage() {
   const router = useRouter();
-  const [action, setAction] = useState('login'); // "login" или "register"
+  const [action, setAction] = useState('login'); 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
@@ -22,7 +22,7 @@ export default function AuthPage() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setErrorMsg(data.error || 'Ошибка');
+        setErrorMsg(data.error || 'Error');
       } else {
         if (action === 'login') {
           // Сохраняем токен и данные пользователя
@@ -33,21 +33,21 @@ export default function AuthPage() {
         } else {
           // После успешной регистрации переключаемся на форму логина
           setAction('login');
-          setErrorMsg('Регистрация успешна. Теперь войдите в систему.');
+          setErrorMsg('Registration succesful. Please, now log in.');
         }
       }
     } catch (error) {
-      console.error('Ошибка запроса:', error);
-      setErrorMsg('Ошибка запроса');
+      console.error('Request error:', error);
+      setErrorMsg('Request error');
     }
   };
 
   return (
     <div style={{ maxWidth: '400px', margin: '2rem auto', textAlign: 'center' }}>
-      <h1>{action === 'login' ? 'Авторизация' : 'Регистрация'}</h1>
+      <h1>{action === 'login' ? 'Authorization' : 'Registration'}</h1>
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: '1rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem' }}>Логин:</label>
+          <label style={{ display: 'block', marginBottom: '0.5rem' }}>Login:</label>
           <input
             type="text"
             value={username}
@@ -57,7 +57,7 @@ export default function AuthPage() {
           />
         </div>
         <div style={{ marginBottom: '1rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem' }}>Пароль:</label>
+          <label style={{ display: 'block', marginBottom: '0.5rem' }}>Password:</label>
           <input
             type="password"
             value={password}
@@ -68,22 +68,22 @@ export default function AuthPage() {
         </div>
         {errorMsg && <p style={{ color: 'red' }}>{errorMsg}</p>}
         <button type="submit" style={{ padding: '0.75rem 1.5rem', fontSize: '1rem' }}>
-          {action === 'login' ? 'Войти' : 'Зарегистрироваться'}
+          {action === 'login' ? 'Log in' : 'Register'}
         </button>
       </form>
       <div style={{ marginTop: '1rem' }}>
         {action === 'login' ? (
           <p>
-            Нет аккаунта?{' '}
+            Do not have account yet?{' '}
             <button onClick={() => setAction('register')} style={{ cursor: 'pointer', color: 'blue', background: 'none', border: 'none' }}>
-              Зарегистрироваться
+              Register
             </button>
           </p>
         ) : (
           <p>
-            Уже есть аккаунт?{' '}
+            Already have an account?{' '}
             <button onClick={() => setAction('login')} style={{ cursor: 'pointer', color: 'blue', background: 'none', border: 'none' }}>
-              Войти
+              Log in
             </button>
           </p>
         )}

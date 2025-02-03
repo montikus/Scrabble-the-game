@@ -16,7 +16,7 @@ export async function POST(request) {
         Array.from({ length: BOARD_SIZE }, () => '')
       );
     const insertInitialWord = (board) => {
-      const initialWords = ['CAT', 'DOG', 'FOX', 'BIRD'];
+      const initialWords = ['CODE'];
       const word = initialWords[Math.floor(Math.random() * initialWords.length)];
       const row = Math.floor(BOARD_SIZE / 2);
       const startCol = Math.floor((BOARD_SIZE - word.length) / 2);
@@ -43,7 +43,7 @@ export async function POST(request) {
 
     return NextResponse.json(newGame, { status: 201 });
   } catch (error) {
-    console.error('Ошибка при создании игры:', error);
-    return NextResponse.json({ error: 'Ошибка при создании игры' }, { status: 500 });
+    console.error('Error creating game:', error);
+    return NextResponse.json({ error: 'Error during game creation' }, { status: 500 });
   }
 }

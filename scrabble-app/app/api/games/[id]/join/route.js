@@ -9,30 +9,30 @@ export async function POST(request, context) {
     const { id } = await context.params;
     const { playerName } = await request.json();
 
-    console.log(`Присоединение игрока "${playerName}" к игре "${id}"`);
+    console.log(`Coonnecting Player "${playerName}" to game "${id}"`);
 
     if (!playerName) {
-      console.log('Отправлен пустой playerName');
-      return NextResponse.json({ error: 'Имя игрока обязательно' }, { status: 400 });
+      console.log('Empty playerName sent');
+      return NextResponse.json({ error: 'Player name is necessary' }, { status: 400 });
     }
 
     const game = await Game.findById(id);
     if (!game) {
-      console.log(`Игра с ID "${id}" не найдена`);
-      return NextResponse.json({ error: 'Игра не найдена' }, { status: 404 });
+      console.log(`Game with ID "${id}" not found`);
+      return NextResponse.json({ error: 'Game not found' }, { status: 404 });
     }
 
     if (!game.players.includes(playerName)) {
       game.players.push(playerName);
       await game.save();
-      console.log(`Игрок "${playerName}" успешно присоединился к игре "${id}"`);
+      console.log(`Player "${playerName}" succesfully connected to game "${id}"`);
     } else {
-      console.log(`Игрок "${playerName}" уже в игре "${id}"`);
+      console.log(`Player "${playerName}" already in game "${id}"`);
     }
 
     return NextResponse.json({ success: true, game }, { status: 200 });
   } catch (error) {
-    console.error('Ошибка POST /api/games/[id]/join:', error);
-    return NextResponse.json({ error: 'Ошибка сервера' }, { status: 500 });
+    console.error('Error POST /api/games/[id]/join:', error);
+    return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }

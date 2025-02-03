@@ -9,7 +9,7 @@ export function logMessage(message) {
   // fs.appendFile открывает файл, записывает строку и закрывает его
   fs.appendFile(logFilePath, logEntry, (err) => {
     if (err) {
-      console.error('Ошибка записи лога:', err);
+      console.error('Error writtig log:', err);
     }
   });
 }

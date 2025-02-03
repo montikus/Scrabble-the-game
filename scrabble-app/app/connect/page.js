@@ -16,7 +16,6 @@ export default function ConnectPage() {
     }
   }, []);
 
-  // Функция для создания игры (реализуйте по необходимости)
   const createGame = async () => {
     try {
       const res = await fetch('/api/games', {
@@ -26,31 +25,26 @@ export default function ConnectPage() {
       });
       const data = await res.json();
       if (res.ok) {
-        // Предположим, что при успешном создании игры возвращается её _id
         router.push(`/game/${data._id}`);
       } else {
-        alert('Ошибка при создании игры: ' + data.error);
+        alert('Error creation game: ' + data.error);
       }
     } catch (error) {
-      console.error('Ошибка запроса:', error);
+      console.error('Request error:', error);
     }
   };
 
-  // Функция для присоединения к игре (реализуйте по необходимости)
   const joinGame = async () => {
     if (!joinId.trim()) {
-      alert('Введите ID игры');
+      alert('Enter game ID');
       return;
     }
     router.push(`/game/${joinId}`);
   };
 
-  // Функция для выхода (logout)
   const handleLogout = () => {
-    // Удаляем сохранённое имя пользователя
     sessionStorage.removeItem('username');
     setUsername('');
-    // Перенаправляем на страницу авторизации
     router.push('/auth');
   };
 
@@ -58,7 +52,7 @@ export default function ConnectPage() {
     <div style={{ textAlign: 'center', marginTop: '2rem' }}>
       {username ? (
         <div>
-          <h2>Добро пожаловать, {username}!</h2>
+          <h2>Welcome, {username}!</h2>
           <button
             onClick={handleLogout}
             style={{
@@ -71,7 +65,7 @@ export default function ConnectPage() {
               marginBottom: '1rem'
             }}
           >
-            Выйти
+            Exit
           </button>
         </div>
       ) : (

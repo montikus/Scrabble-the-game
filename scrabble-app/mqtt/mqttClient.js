@@ -1,6 +1,6 @@
 // mqtt/mqttClient.js
 import mqtt from 'mqtt';
-const logger = console; // или ваш логгер
+const logger = console; 
 
 const options = {
   clientId: 'scrabble_mqtt_client_' + Math.random().toString(16).substring(2),
@@ -11,25 +11,22 @@ const options = {
 const client = mqtt.connect(process.env.MQTT_URL || 'mqtt://localhost:1883', options);
 
 client.on('connect', () => {
-  logger.log('MQTT клиент подключён');
-  // Можно подписаться на общий топик, если нужно
-  client.subscribe('game/+/chat', (err) => {
+  logger.log('MQTT client connected');
+  client.subscribe('game+chat', (err) => {
     if (err) {
-      logger.error('Ошибка подписки на game/+/chat:', err);
+      logger.error('Error subscribtion game+chat:', err);
     } else {
-      logger.log('Подписка на game/+/chat успешна');
+      logger.log('Subscribtion no game+chat succesfull');
     }
   });
 });
 
 client.on('message', (topic, message) => {
   logger.log(`MQTT: [${topic}] ${message.toString()}`);
-  // Можно обрабатывать сообщения — напр. 
-  // можно ретранслировать их обратно в Socket.io.
 });
 
 client.on('error', (error) => {
-  logger.error(`MQTT ошибка: ${error.message}`);
+  logger.error(`MQTT error: ${error.message}`);
 });
 
 export default client;

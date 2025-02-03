@@ -16,21 +16,21 @@ export function initSocket(server) {
   });
 
   io.on('connection', (socket) => {
-    logger.info(`Новое WebSocket подключение: ${socket.id}`);
+    logger.info(`New WebSocket connection: ${socket.id}`);
 
     socket.on('joinRoom', (room) => {
       socket.join(room);
-      logger.info(`${socket.id} зашёл в комнату ${room}`);
+      logger.info(`${socket.id} joined room ${room}`);
     });
 
     socket.on('chatMessage', (msg) => {
-      logger.info(`Сообщение в чате: ${msg}`);
+      logger.info(`Message in chat: ${msg}`);
       // Рассылаем всем в комнате
       io.to('scrabbleRoom').emit('chatMessage', msg);
     });
 
     socket.on('disconnect', () => {
-      logger.info(`Отключение WebSocket: ${socket.id}`);
+      logger.info(`Disconnecting WebSocket: ${socket.id}`);
     });
   });
 

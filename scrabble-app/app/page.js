@@ -18,7 +18,7 @@ export default function HomePage() {
         </button>
       <p>OR:</p>
       <ul>
-        <li><Link href="/dashboard">Dashboard</Link></li>
+        {/* <li><Link href="/dashboard">Dashboard</Link></li> */}
         <li><Link href="/api/words">Dictionary</Link></li>
       </ul>
     </div>
