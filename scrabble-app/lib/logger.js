@@ -1,16 +1,17 @@
 // lib/logger.js
-import winston from 'winston';
+import fs from 'fs';
 import path from 'path';
 
-const logPath = path.join(process.cwd(), 'logs', 'app.log');
+const logFilePath = path.join(process.cwd(), 'game.log');
 
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.json(),
-  transports: [
-    new winston.transports.File({ filename: logPath }),
-    new winston.transports.Console({ format: winston.format.simple() }),
-  ],
-});
+export function logMessage(message) {
+  const logEntry = `[${new Date().toISOString()}] ${message}\n`;
+  // fs.appendFile открывает файл, записывает строку и закрывает его
+  fs.appendFile(logFilePath, logEntry, (err) => {
+    if (err) {
+      console.error('Ошибка записи лога:', err);
+    }
+  });
+}
 
-export default logger;
+export default logMessage;

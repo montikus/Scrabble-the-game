@@ -1,16 +1,16 @@
 'use client';
 import React from 'react';
 
-export default function Board({ board, /*onCellChange,*/ disabled }) {
+export default function Board({ board, onCellChange, disabled }) {
   if (!board || !Array.isArray(board)) {
     return <div>Доска не загружена</div>;
   }
 
-  // const handleChange = (row, col, e) => {
-  //   if (disabled) return;
-  //   const letter = e.target.value ? e.target.value[0].toUpperCase() : '';
-  //   onCellChange(row, col, letter);
-  // };
+  const handleChange = (row, col, e) => {
+    if (disabled) return;
+    const letter = e.target.value ? e.target.value[0].toUpperCase() : '';
+    onCellChange(row, col, letter);
+  };
 
   return (
     <table style={{ borderCollapse: 'collapse', margin: '0 auto' }}>
@@ -30,13 +30,13 @@ export default function Board({ board, /*onCellChange,*/ disabled }) {
                 <input
                   type="text"
                   value={cell}
-                  // onChange={(e) => handleChange(rowIndex, colIndex, e)}
-                  // style={{
-                  //   width: '100%',
-                  //   height: '100%',
-                  //   textAlign: 'center',
-                  //   fontSize: '16px',
-                  // }}
+                  onChange={(e) => handleChange(rowIndex, colIndex, e)}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    textAlign: 'center',
+                    fontSize: '16px',
+                  }}
                   maxLength={1}
                   disabled={disabled}
                 />

@@ -2,6 +2,7 @@
 import { createServer } from 'http';
 import next from 'next';
 import { Server } from 'socket.io';
+import { logMessage } from './lib/logger.js';
 import mqttClient from './mqtt/mqttClient.js'; // Убедитесь, что mqttClient экспортируется корректно
 
 const dev = process.env.NODE_ENV !== 'production';
@@ -29,15 +30,17 @@ async function main() {
         console.log(`Игрок "${playerName}" зашёл в комнату ${gameId}`);
         // Рассылаем всем в комнате уведомление о новом участнике
         io.to(gameId).emit('playerJoined', { playerName, gameId });
+        logMessage(`Player ${playerName} joined game ${gameId}`);
       });
 
       // Обработчик чата
       socket.on('chatMessage', (gameId, message) => {
-        console.log(`Сообщение в комнате ${gameId} от "${message.sender}": ${message.text}`);
+        console.log(`Message ${gameId} from "${message.sender}": ${message.text}`);
         // Рассылаем сообщение всем участникам комнаты
         io.to(gameId).emit('chatMessage', message);
         // Публикуем сообщение в MQTT (если необходимо)
         mqttClient.publish(`game/${gameId}/chat`, JSON.stringify(message));
+        logMessage(`Message in gamechat ${gameId}: ${message.text}`);
       });
 
       // Новое событие: завершение хода
@@ -47,6 +50,7 @@ async function main() {
         // например, сохранить состояние игры в БД, проверить валидность хода и т.д.
         // Рассылаем обновлённое состояние игры всем клиентам в этой комнате:
         io.to(gameId).emit('moveUpdate', move);
+        logMessage(`Move in game ${gameId}: ${move.message}`);
       });
 
       // Дополнительное событие: выход из комнаты (опционально)

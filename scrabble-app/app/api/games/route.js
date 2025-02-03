@@ -2,6 +2,7 @@
 import { connectDB } from '@/lib/db';
 import Game from '@/models/Game';
 import { NextResponse } from 'next/server';
+import { logMessage } from '@/lib/logger';
 
 export async function POST(request) {
   try {
@@ -37,6 +38,8 @@ export async function POST(request) {
       board: boardWithInitialWord,
       moveMessage: '',
     });
+
+    logMessage(`Game statrted. ID: ${newGame._id}`);
 
     return NextResponse.json(newGame, { status: 201 });
   } catch (error) {
