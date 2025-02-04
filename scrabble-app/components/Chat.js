@@ -36,7 +36,7 @@ export default function Chat({ socket, gameId, playerName }) {
 
   return (
     <div style={{ marginTop: '1rem' }}>
-      <h3>Чат</h3>
+      <h3>Chat</h3>
       <div style={{ border: '1px solid #ccc', height: '150px', overflowY: 'auto', marginBottom: '0.5rem' }}>
         {messages.map((msg, index) => (
           <div key={index}>

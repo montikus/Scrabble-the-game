@@ -63,7 +63,7 @@ async function main() {
     });
 
     // Запуск сервера на указанном порту
-    const port = process.env.PORT || 5000
+    const port = process.env.PORT || 3000
     server.listen(port, (err) => {
       if (err) throw err;
       console.log(`> Server listening on http://localhost:${port}`);

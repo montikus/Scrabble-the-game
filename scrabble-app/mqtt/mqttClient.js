@@ -12,13 +12,13 @@ const client = mqtt.connect(process.env.MQTT_URL || 'mqtt://localhost:1883', opt
 
 client.on('connect', () => {
   logger.log('MQTT client connected');
-  client.subscribe('game+chat', (err) => {
+  client.subscribe('game+chat'/*, (err) => {
     if (err) {
       logger.error('Error subscribtion game+chat:', err);
     } else {
       logger.log('Subscribtion no game+chat succesfull');
     }
-  });
+  }*/);
 });
 
 client.on('message', (topic, message) => {

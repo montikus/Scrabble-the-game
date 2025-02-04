@@ -17,7 +17,7 @@ const createEmptyBoard = () =>
 
 // Функция вставки случайного начального слова в центральную строку
 const insertInitialWord = (board) => {
-  const initialWords = ['CAT', 'DOG', 'FOX', 'BIRD'];
+  const initialWords = ['CODE'];
   const word = initialWords[Math.floor(Math.random() * initialWords.length)];
   const row = Math.floor(BOARD_SIZE / 2);
   const startCol = Math.floor((BOARD_SIZE - word.length) / 2);
@@ -99,7 +99,7 @@ export default function GamePage() {
   const [localPlayer, setLocalPlayer] = useState('');
   const [currentTurn, setCurrentTurn] = useState('');
   const [scores, setScores] = useState({});
-  // const [moveMessage, setMoveMessage] = useState('');
+  const [moveMessage, setMoveMessage] = useState('');
   const [players, setPlayers] = useState([]);
   const [socket, setSocket] = useState(null);
   const [turnStatus, setTurnStatus] = useState(0); // Для двух игроков: 0 или 1
@@ -153,7 +153,7 @@ export default function GamePage() {
         setCurrentTurn(nextPlayer);
       }
       if (move.scores) setScores(move.scores);
-      // if (move.message) setMoveMessage(move.message);
+      if (move.message) setMoveMessage(move.message);
     });
 
     return () => {
@@ -196,7 +196,7 @@ export default function GamePage() {
     const nextTurn = players[nextTurnStatus] || localPlayer;
     setCurrentTurn(nextTurn);
 
-    const moveMsg = `Move: ${localPlayer}. Words on board: ${wordsFound.join(', ')}`;
+    const moveMsg = `Move completed! Words on board: ${wordsFound.join(', ')}`;
 
     const move = {
       board,
@@ -211,7 +211,7 @@ export default function GamePage() {
     }
 
     setScores(newScores);
-    // setMoveMessage(moveMsg);
+    setMoveMessage(moveMsg);
   };
 
   return (
@@ -226,7 +226,7 @@ export default function GamePage() {
       {/* <p>
         Ваши очки: <strong>{scores[localPlayer] || 0}</strong>
       </p> */}
-      {/* {moveMessage && <p>{moveMessage}</p>} */}
+      {moveMessage && <p>{moveMessage}</p>}
       <Board board={board} onCellChange={handleCellChange} disabled={false} />
       {/* {localPlayer === currentTurn && ( */}
         <button onClick={endTurn} style={{ marginTop: '1rem', padding: '0.5rem 1rem' }}>
